@@ -9,7 +9,7 @@ defmodule Minesweeper.Application do
   def start(_type, _args) do
     children = [
       # Start the Ecto repository
-      Minesweeper.Repo,
+      # Minesweeper.Repo,
       # Start the Telemetry supervisor
       MinesweeperWeb.Telemetry,
       # Start the PubSub system
