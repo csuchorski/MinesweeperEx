@@ -8,7 +8,7 @@
   <meta name="csrf-token" content={csrf_token_value()}>
   <%= live_title_tag assigns[:page_title] || "Minesweeper"%>
     <link phx-track-static rel="stylesheet" href={Routes.static_path(@conn, "/assets/app.css" )} />
-    <link href="https://fonts.googleapis.com/css2?family=Comfortaa" rel="stylesheet"> 
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono" rel="stylesheet"> 
     <script defer phx-track-static type="text/javascript" src={Routes.static_path(@conn, "/assets/app.js" )}></script>
 </head>
 
@@ -18,6 +18,9 @@
     <nav>
       <a href="https://www.github.com/csuchorski">
         <img src={Routes.static_path(@conn, "/images/gh_logo_120.png")} alt="GitHub logo">
+      </a>
+      <a href="https://phoenixframework.org/">
+        <img src={Routes.static_path(@conn, "/images/phoenix_logo.svg")} alt="Phoenix Framework logo">
       </a>
     </nav>
   </header>

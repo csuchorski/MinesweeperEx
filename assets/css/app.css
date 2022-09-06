@@ -104,33 +104,82 @@
 }
 
 /*Custom styles for my app*/
+* {
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 5em;
+  font-family: "Share Tech Mono", monospace
+}
 
 header {
+  width: 100%;
   display: flex;
   flex-direction: row;
   align-items: center;
+  justify-content: space-between;
   height: 4em;
+  margin-bottom: 1em;
 }
 
 header h1 {
-  font-family: "Comfortaa";
+  font-size: 2.5em;
+  font-weight: 500;
 }
 
-header a {
-  height: 2.5em;
+header nav {
+  justify-self: flex-end;
+  display: flex;
+  gap: 2em;
 }
 
-header img {
-  max-height: 100%;
+nav a {
+  height: 3em;
 }
 
-.app {
-  border: 1px black solid;
-  width: 800px;
-  height: 80vh;
+nav img {
+  height: 100%;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+
+}
+
+main h2 {
+  font-size: 2em;
+  border-bottom: 3px solid #000;
+}
+
+main p {
+  font-size: 1.5em;
+}
+
+.landing-hero {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2em;
   background-color: #F07167;
-
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  font-size: 1.5em;
+  overflow: hidden;
 }
+
+.landing-hero img {
+  max-width: 15%;
+}
+
+
 
 /*Keyframes*/
 
