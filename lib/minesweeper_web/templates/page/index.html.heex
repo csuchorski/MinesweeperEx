@@ -1,6 +1,7 @@
 <section class="landing-hero">
-  <img src={Routes.static_path(@conn, "/images/bomb.svg")} alt="cartoon bomb image">
-  <p>A minesweeper game created with Pheonix LiveView</p>
+  <img src={Routes.static_path(@conn, "/images/bomb.svg" )}
+    alt="cartoon bomb image">
+  <p>A minesweeper game created with Phoenix LiveView</p>
 </section>
 
 <h2>Play</h2>
@@ -9,16 +10,49 @@
   <p>
     Please choose the difficulty.
   </p>
-  
-  <div id="difficulty-list" class="param-setup" >
+  <!-- 
+  <form method="get">
+    <div class="param-setup">
+      <div>
+        <label for="beginner">Beginner</label>
+        <input type="radio" name="diff" id="beginner" value="beginner">
+      </div>
+      <div>
+        <label for="intermediate">Intermediate</label>
+        <input type="radio" name="diff" id="intermediate" value="intermediate">
+      </div>
+      <div>
+        <label for="expert">Expert</label>
+        <input type="radio" name="diff" id="expert" value="expert">
+      </div>
+    </div>
+
+    <div class="param-setup">
+      <div>
+        <label for="small">Small</label>
+        <input type="radio" name="size" id="small" value="small">
+      </div>
+      <div>
+        <label for="medium">Medium</label>
+        <input type="radio" name="size" id="medium" value="medium">
+      </div>
+      <div>
+        <label for="big">Big</label>
+        <input type="radio" name="size" id="big" value="big">
+      </div>
+    </div>
+  </form> -->
+
+
+  <div id="difficulty-list" class="param-setup">
     <div>
-      <button>Beginner</button>
+      <button id="begBtn">Beginner</button>
     </div>
     <div>
-      <button>Intermediate</button>
+      <button id="intBtn">Intermediate</button>
     </div>
     <div>
-      <button>Expert</button>
+      <button id="expBtn">Expert</button>
     </div>
   </div>
   <p>
@@ -26,14 +60,13 @@
   </p>
   <div id="size-list" class="param-setup">
     <div>
-      <button>Small</button>
+      <button id="smlBtn">Small</button>
     </div>
     <div>
-      <button>Medium</button>
+      <button id="medBtn">Medium</button>
     </div>
     <div>
-      <button>Big</button>
+      <button id="bigBtn">Big</button>
     </div>
   </div>
-  
 </div>
