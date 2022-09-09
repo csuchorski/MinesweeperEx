@@ -202,21 +202,21 @@ main p {
   display: flex;
   justify-content: space-around;
   align-items: center;
+  border-bottom: 1px solid #31708f;
 }
 
-#difficulty-list {
-  border-bottom: 2px solid #31708f;
-}
-
-#beginner+p {
+#beginner+p,
+#small+p {
   border-color: #FED9B7;
 }
 
-#intermediate+p {
+#intermediate+p,
+#medium+p {
   border-color: #B9FEDA;
 }
 
-#expert+p {
+#expert+p,
+#big+p {
   border-color: #DAB9FE;
 }
 
