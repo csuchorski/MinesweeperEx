@@ -8,42 +8,45 @@
 
 <div class="game-setup">
 
-  <form method="get">
+  <form action="/game" method="get">
     <p>
       Please choose the difficulty.
     </p>
     <div class="param-setup">
       <label for="beginner">
-        <input type="radio" name="diff" id="beginner" value="beginner">
+        <input type="radio" name="diff" id="beginner" value="beginner" required>
         <p>Beginner</p>
       </label>
 
       <label for="intermediate">
-        <input type="radio" name="diff" id="intermediate" value="intermediate">
+        <input type="radio" name="diff" id="intermediate" value="intermediate"
+          required>
         <p>Intermediate</p>
       </label>
 
       <label for="expert">
-        <input type="radio" name="diff" id="expert" value="expert">
+        <input type="radio" name="diff" id="expert" value="expert" required>
         <p>Expert</p>
       </label>
     </div>
     <p>Please choose board size</p>
     <div class="param-setup">
       <label for="small">
-        <input type="radio" name="size" id="small" value="small">
+        <input type="radio" name="size" id="small" value="small" required>
         <p>Small</p>
       </label>
 
       <label for="medium">
-        <input type="radio" name="size" id="medium" value="medium">
+        <input type="radio" name="size" id="medium" value="medium" required>
         <p>Medium</p>
       </label>
 
       <label for="big">
-        <input type="radio" name="size" id="big" value="big">
+        <input type="radio" name="size" id="big" value="big" required>
         <p>Big</p>
       </label>
     </div>
+    <button type="submit" id="play-btn">Play</button>
   </form>
 </div>
+<footer></footer>
