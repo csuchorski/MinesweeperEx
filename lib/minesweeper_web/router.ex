@@ -18,6 +18,9 @@ defmodule MinesweeperWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+
+    live "/game", GameLive.Play, :new
+    live "/game/:id", GameLive.Play, :play
   end
 
   # Other scopes may use custom stacks.
