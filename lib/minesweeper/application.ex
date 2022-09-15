@@ -8,16 +8,10 @@ defmodule Minesweeper.Application do
   @impl true
   def start(_type, _args) do
     children = [
-      # Start the Ecto repository
-      # Minesweeper.Repo,
-      # Start the Telemetry supervisor
       MinesweeperWeb.Telemetry,
-      # Start the PubSub system
       {Phoenix.PubSub, name: Minesweeper.PubSub},
-      # Start the Endpoint (http/https)
-      MinesweeperWeb.Endpoint
-      # Start a worker by calling: Minesweeper.Worker.start_link(arg)
-      # {Minesweeper.Worker, arg}
+      MinesweeperWeb.Endpoint,
+      {DynamicSupervisor, strategy: :one_for_one, name: Minesweeper.DynamicSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
