@@ -39,12 +39,9 @@ defmodule Minesweeper.GameLogic do
       |> Enum.shuffle()
       |> Enum.split(params.mine_count)
 
-    mine_squares
-    |> Enum.map(fn {coords, properties} ->
-      {coords, %{properties | value: :mine}}
-    end)
+    mine_squares = map_mines_to_squares(mine_squares)
 
-    mine_squares ++ normal_squares
+    increment_near_bombs(mine_squares, normal_squares)
   end
 
   @spec generate_id :: binary
@@ -58,23 +55,19 @@ defmodule Minesweeper.GameLogic do
     end
   end
 
+  defp map_mines_to_squares(mine_squares) do
+    mine_squares
+    |> Enum.map(fn {coords, properties} ->
+      {coords, %{properties | value: :mine}}
+    end)
+  end
+
   defp increment_near_bombs(mine_squares, normal_squares) do
-    for bomb_square <- mine_squares,
-        {bomb_x, bomb_y} <- bomb_square,
+    # Gets coords of all squares touching bombs or bombs themselves
+    for {{bomb_x, bomb_y}, _} <- mine_squares,
         modifier_x <- -1..1,
-        modifier_y <- -1..1,
-        coords <- {bomb_x + modifier_x, bomb_y + modifier_y} do
-      Enum.reduce(normal_squares, [], fn square, acc ->
-        nil
-        # {^coords, params} = square
-      end)
+        modifier_y <- -1..1 do
+      {bomb_x + modifier_x, bomb_y + modifier_y}
     end
   end
 end
-
-# bomb_x+modifier_x, bomb_y + modifier_y
-#  {1,2}
-#
-# elem(bomb_square , 0)
-# for   bomb_square <- mine_squares,
-#   {1,2},
