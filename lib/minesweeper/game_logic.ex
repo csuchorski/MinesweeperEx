@@ -33,11 +33,28 @@ defmodule Minesweeper.GameLogic do
     end
   end
 
-  def setup_board(difficulty) do
+  def setup_board(params) do
+    {mine_squares, normal_squares} =
+      generate_field(params)
+      |> Enum.shuffle()
+      |> Enum.split(params.mine_count)
+
+    mine_squares
+    |> Enum.map(fn {coords, properties} ->
+      {coords, %{properties | value: :mine}}
+    end)
+
+    mine_squares ++ normal_squares
   end
 
   @spec generate_id :: binary
   def generate_id() do
     :crypto.strong_rand_bytes(6) |> Base.url_encode64(padding: false)
+  end
+
+  defp generate_field(params) do
+    for x <- 1..params.width, y <- 1..params.height do
+      {{x, y}, %{revealed?: false, marked?: false, value: 0}}
+    end
   end
 end
