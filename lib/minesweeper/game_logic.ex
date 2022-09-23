@@ -64,10 +64,23 @@ defmodule Minesweeper.GameLogic do
 
   defp increment_near_bombs(mine_squares, normal_squares) do
     # Gets coords of all squares touching bombs or bombs themselves
-    for {{bomb_x, bomb_y}, _} <- mine_squares,
-        modifier_x <- -1..1,
-        modifier_y <- -1..1 do
-      {bomb_x + modifier_x, bomb_y + modifier_y}
-    end
+    squares_to_increment =
+      for {{bomb_x, bomb_y}, _} <- mine_squares,
+          modifier_x <- -1..1,
+          modifier_y <- -1..1 do
+        if modifier_x == 0 && modifier_y == 0 do
+          nil
+        else
+          {bomb_x + modifier_x, bomb_y + modifier_y}
+        end
+      end
+      |> Enum.reject(fn element -> element == nil end)
+
+    # Doesnt work because doesnt account for incrementing the same square multiple times
+    # Enum.reduce(normal_squares, [], fn {coords, properties}, acc ->
+    #   if Enum.member?(coords, squares_to_increment) do
+    #     acc ++ {coords, %{properties | va}}
+    #   end
+    # end)
   end
 end
