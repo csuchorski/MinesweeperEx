@@ -65,6 +65,7 @@ defmodule Minesweeper.GameLogic do
 
   defp increment_near_bombs(mine_squares, normal_squares) do
     # Gets coords of all squares touching bombs or bombs themselves
+    # Getting spaghetti code vibes from this, needs improvement
     squares_to_increment =
       for {{bomb_x, bomb_y}, _} <- mine_squares,
           modifier_x <- -1..1,
@@ -76,11 +77,17 @@ defmodule Minesweeper.GameLogic do
         end
       end
       |> Enum.reject(fn element -> element == nil end)
-
-    Enum.reduce(squares_to_increment, normal_squares, fn coords, acc ->
-      Map.update!(acc, coords, fn properties ->
-        %{properties | value: properties.value + 1}
+      |> Enum.filter(fn {x, y} ->
+        x > 0 && x < 4 && y > 0 && y < 4
       end)
-    end)
+
+    incremented_normal_squares =
+      Enum.reduce(squares_to_increment, normal_squares, fn coords, acc ->
+        Map.update!(acc, coords, fn properties ->
+          %{properties | value: properties.value + 1}
+        end)
+      end)
+
+    Map.merge(Enum.into(mine_squares, %{}), incremented_normal_squares)
   end
 end
