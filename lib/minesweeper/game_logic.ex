@@ -40,6 +40,7 @@ defmodule Minesweeper.GameLogic do
       |> Enum.split(params.mine_count)
 
     mine_squares = map_mines_to_squares(mine_squares)
+    normal_squares = Enum.into(normal_squares, %{})
 
     increment_near_bombs(mine_squares, normal_squares)
   end
@@ -76,11 +77,10 @@ defmodule Minesweeper.GameLogic do
       end
       |> Enum.reject(fn element -> element == nil end)
 
-    # Doesnt work because doesnt account for incrementing the same square multiple times
-    # Enum.reduce(normal_squares, [], fn {coords, properties}, acc ->
-    #   if Enum.member?(coords, squares_to_increment) do
-    #     acc ++ {coords, %{properties | va}}
-    #   end
-    # end)
+    Enum.reduce(squares_to_increment, normal_squares, fn coords, acc ->
+      Map.update!(acc, coords, fn properties ->
+        %{properties | value: properties.value + 1}
+      end)
+    end)
   end
 end
