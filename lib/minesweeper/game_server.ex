@@ -12,16 +12,22 @@ defmodule Minesweeper.GameServer do
         squares_revealed_count: 0
       })
 
-    {:ok, state, {:continue, :start_game}}
-  end
-
-  # Runs right after init of game server, generates the field and starts square servers
-  def handle_continue(:start_game, state) do
     field = Minesweeper.GameLogic.setup_board(state)
 
-    for square <- field do
-      GenServer.start(Minesweeper.SquareServer, square)
+    {:ok, square_supervisor_pid} =
+      DynamicSupervisor.start_child(
+        Minesweeper.DynamicSupervisor,
+        {DynamicSupervisor, strategy: :one_for_one}
+      )
+
+    for {coords, properties} <- field do
+      DynamicSupervisor.start_child(
+        square_supervisor_pid,
+        {Minesweeper.SquareServer, {state.game_id, {coords, properties}}}
+      )
     end
+
+    {:ok, %{state | square_supervisor: square_supervisor_pid}}
   end
 
   def handle_call() do
