@@ -11,7 +11,9 @@ defmodule Minesweeper.Application do
       MinesweeperWeb.Telemetry,
       {Phoenix.PubSub, name: Minesweeper.PubSub},
       MinesweeperWeb.Endpoint,
-      {DynamicSupervisor, strategy: :one_for_one, name: Minesweeper.DynamicSupervisor}
+      {Registry, keys: :unique, name: GameRegistry},
+      {DynamicSupervisor, strategy: :one_for_one, name: GameSupervisor},
+      {DynamicSupervisor, strategy: :one_for_one, name: MainSquareSupervisor}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

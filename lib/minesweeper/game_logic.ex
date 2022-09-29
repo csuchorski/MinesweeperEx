@@ -22,7 +22,7 @@ defmodule Minesweeper.GameLogic do
 
     game =
       DynamicSupervisor.start_child(
-        Minesweeper.DynamicSupervisor,
+        GameSupervisor,
         {Minesweeper.GameServer, game_params}
       )
 

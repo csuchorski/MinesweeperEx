@@ -16,14 +16,14 @@ defmodule Minesweeper.GameServer do
 
     {:ok, square_supervisor_pid} =
       DynamicSupervisor.start_child(
-        Minesweeper.DynamicSupervisor,
+        MainSquareSupervisor,
         {DynamicSupervisor, strategy: :one_for_one}
       )
 
     for {coords, properties} <- field do
       DynamicSupervisor.start_child(
         square_supervisor_pid,
-        {Minesweeper.SquareServer, {state.game_id, {coords, properties}}}
+        {Minesweeper.SquareServer, {state.game_id, coords, properties}}
       )
     end
 
