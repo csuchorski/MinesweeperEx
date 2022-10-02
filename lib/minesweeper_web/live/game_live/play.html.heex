@@ -1,0 +1,16 @@
+<table>
+<%= for row <- 1..@height do  %>
+    <tr>
+        <%= for col <- 1..@width do%>
+            <td>
+                <.live_component
+                    id={"#{@game_id}-#{col}-#{row}"}
+                    module={MinesweeperWeb.GameLive.SquareComponent}
+                    game_id={@game_id}
+                    coords={{col, row}}
+                />
+            </td>
+        <%end %>
+    </tr>
+<%end %>
+</table>
