@@ -5,7 +5,9 @@ defmodule Minesweeper.GameServer do
   use GenServer, restart: :temporary
 
   def start_link(game_params) do
-    GenServer.start_link(__MODULE__, game_params, name: {:via, GameRegistry, game_params.game_id})
+    GenServer.start_link(__MODULE__, game_params,
+      name: {:via, Registry, {GameRegistry, game_params.game_id}}
+    )
   end
 
   def init(game_params) do

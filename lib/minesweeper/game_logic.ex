@@ -27,7 +27,7 @@ defmodule Minesweeper.GameLogic do
       )
 
     with {:ok, _pid} <- game do
-      {:ok, game_params.game_id}
+      {:ok, game_params}
     else
       {:error, message} -> {:error, message}
     end
@@ -37,7 +37,7 @@ defmodule Minesweeper.GameLogic do
     {mine_squares, normal_squares} =
       generate_field(params)
       |> Enum.shuffle()
-      |> Enum.split(params.mine_count)
+      |> Enum.split(params.mines_count)
 
     mine_squares = map_mines_to_squares(mine_squares)
     normal_squares = Enum.into(normal_squares, %{})
