@@ -13,4 +13,12 @@ defmodule Minesweeper.SquareServer do
   def init({game_id, {coords, properties}}) do
     {:ok, %{game_id: game_id, coords: coords, properties: properties}}
   end
+
+  def get({game_id, {col, row}}) do
+    GenServer.call({:via, Registry, {GameRegistry, {game_id, {col, row}}}}, :get)
+  end
+
+  def handle_call(:get, _from, state) do
+    {:reply, state, state}
+  end
 end
