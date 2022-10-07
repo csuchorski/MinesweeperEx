@@ -9,7 +9,7 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
 
   def update(assigns, socket) do
     properties = SquareServer.get({assigns.game_id, assigns.coords}).properties
-    # properties = %{value: 1, revealed?: true}
+
     {:ok, assign(socket, :properties, properties)}
   end
 
