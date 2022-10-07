@@ -8,11 +8,12 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
   end
 
   def update(assigns, socket) do
-    properties = SquareServer.get({assigns.game_id, assigns.coords})
-    {:ok, assign(socket, Map.merge(assigns, properties))}
+    properties = SquareServer.get({assigns.game_id, assigns.coords}).properties
+    # properties = %{value: 1, revealed?: true}
+    {:ok, assign(socket, :properties, properties)}
   end
 
-  def show(%{revealed?: false, marked?: false}), do: ""
+  def show(%{revealed?: false, marked?: false}), do: "empty"
 
   def show(%{revealed?: false, marked?: true}), do: "flag"
 

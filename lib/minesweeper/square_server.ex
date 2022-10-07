@@ -6,7 +6,7 @@ defmodule Minesweeper.SquareServer do
 
   def start_link({game_id, coords, properties}) do
     GenServer.start_link(__MODULE__, {game_id, {coords, properties}},
-      name: {:via, GameRegistry, {game_id, coords}}
+      name: {:via, Registry, {GameRegistry, {game_id, coords}}}
     )
   end
 
@@ -14,8 +14,8 @@ defmodule Minesweeper.SquareServer do
     {:ok, %{game_id: game_id, coords: coords, properties: properties}}
   end
 
-  def get({game_id, {col, row}}) do
-    GenServer.call({:via, Registry, {GameRegistry, {game_id, {col, row}}}}, :get)
+  def get({game_id, coords}) do
+    GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :get)
   end
 
   def handle_call(:get, _from, state) do
