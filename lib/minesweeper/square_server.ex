@@ -18,7 +18,28 @@ defmodule Minesweeper.SquareServer do
     GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :get)
   end
 
+  def reveal({game_id, coords}) do
+    GenServer.call(({:via, Registry, {GameRegistry, {game_id, coords}}}, :reveal))
+  end
+
+  def mark({game_id, coords}) do
+    GenServer.call(({:via, Registry, {GameRegistry, {game_id, coords}}}, :mark))
+
+  end
+
   def handle_call(:get, _from, state) do
     {:reply, state, state}
+  end
+
+  def handle_call(:reveal, _from, state) do
+    {:reply, %{state | revealed?: true}}
+  end
+
+  def handle_call(:mark, _from, %{marked?: true} = state) do
+    {:reply, %{state | marked?: false}, %{state | marked?: false}}
+  end
+
+  def handle_call(:mark, _from, %{marked?: false} = state) do
+    {:reply, %{state | marked?: true}, %{state | marked?: true}}
   end
 end
