@@ -26,11 +26,10 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
 
   def show(%{revealed?: true, value: n}), do: n
 
-  def handle_event("reveal", _value, socket) do
-    # IO.inspect(socket.assigns)
+  def handle_event("reveal", _from, socket) do
     SquareServer.reveal({socket.assigns.game_id, socket.assigns.coords})
-    # {:ok, new_props} = SquareServer.reveal({socket.assigns.game_id, socket.assigns.coords})
-    # {:noreply, assign(socket, :properties, new_props)}
+
+    # send(self(), )
     {:noreply, socket}
   end
 end
