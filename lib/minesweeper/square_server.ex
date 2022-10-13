@@ -35,16 +35,16 @@ defmodule Minesweeper.SquareServer do
 
   def handle_call(:reveal, _from, %{properties: properties} = state) do
     new_state = %{state | properties: %{properties | revealed?: true}}
-    {:reply, new_state, new_state}
+    {:reply, new_state.properties, new_state}
   end
 
   def handle_call(:mark, _from, %{properties: %{marked?: true} = properties} = state) do
     new_state = %{state | properties: %{properties | marked?: false}}
-    {:reply, new_state, new_state}
+    {:reply, new_state.properties, new_state}
   end
 
   def handle_call(:mark, _from, %{properties: %{marked?: false} = properties} = state) do
     new_state = %{state | properties: %{properties | marked?: true}}
-    {:reply, new_state, new_state}
+    {:reply, new_state.properties, new_state}
   end
 end

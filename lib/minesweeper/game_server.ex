@@ -33,7 +33,6 @@ defmodule Minesweeper.GameServer do
   end
 
   def handle_cast(:increment_revealed_count, state) do
-    IO.inspect({:ok, state.squares_revealed_count + 1})
     {:noreply, %{state | squares_revealed_count: state.squares_revealed_count + 1}}
   end
 end
