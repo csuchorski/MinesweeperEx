@@ -19,6 +19,9 @@ defmodule Minesweeper.SquareServer do
   end
 
   def reveal({game_id, coords}) do
+    # Increment the count of revealed squares in the GameServer
+    GenServer.cast({:via, Registry, {GameRegistry, game_id}}, :increment_revealed_count)
+    # Reveal a square in the SquareServer
     GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :reveal)
   end
 

@@ -17,7 +17,10 @@ defmodule Minesweeper.GameLogic do
       game_id: generate_id(),
       width: diff_tuple |> elem(0),
       height: diff_tuple |> elem(1),
-      mines_count: diff_tuple |> elem(2)
+      mines_count: diff_tuple |> elem(2),
+      square_supervisor: nil,
+      flag_count: 0,
+      squares_revealed_count: 0
     }
 
     game =

@@ -10,14 +10,7 @@ defmodule Minesweeper.GameServer do
     )
   end
 
-  def init(game_params) do
-    state =
-      Map.merge(game_params, %{
-        square_supervisor: nil,
-        flag_count: 0,
-        squares_revealed_count: 0
-      })
-
+  def init(state) do
     field = Minesweeper.GameLogic.setup_board(state)
 
     {:ok, square_supervisor_pid} =
@@ -39,6 +32,8 @@ defmodule Minesweeper.GameServer do
   def handle_call() do
   end
 
-  def handle_cast() do
+  def handle_cast(:increment_revealed_count, state) do
+    IO.inspect({:ok, state.squares_revealed_count + 1})
+    {:noreply, %{state | squares_revealed_count: state.squares_revealed_count + 1}}
   end
 end

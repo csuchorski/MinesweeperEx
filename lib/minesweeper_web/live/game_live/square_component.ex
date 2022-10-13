@@ -30,8 +30,6 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
     %{properties: new_props} =
       SquareServer.reveal({socket.assigns.game_id, socket.assigns.coords})
 
-    # IO.inspect(socket)
-    # send(self(), {:changed_square, socket.assigns.game_id, socket.assigns.coords})
     {:noreply, assign(socket, :properties, new_props)}
   end
 end
