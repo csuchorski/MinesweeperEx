@@ -14,6 +14,8 @@ defmodule Minesweeper.SquareServer do
     {:ok, %{game_id: game_id, coords: coords, properties: properties}}
   end
 
+  # Custom functions
+
   def get({game_id, coords}) do
     GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :get)
   end
@@ -29,9 +31,9 @@ defmodule Minesweeper.SquareServer do
     GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :mark)
   end
 
-  def handle_call(:get, _from, state) do
-    {:reply, state, state}
-  end
+  # Handle callbacks
+
+  def handle_call(:get, _from, state), do: {:reply, state, state}
 
   def handle_call(:reveal, _from, %{properties: properties} = state) do
     new_state = %{state | properties: %{properties | revealed?: true}}
@@ -39,11 +41,15 @@ defmodule Minesweeper.SquareServer do
   end
 
   def handle_call(:mark, _from, %{properties: %{marked?: true} = properties} = state) do
+    GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :decrement_flags)
+
     new_state = %{state | properties: %{properties | marked?: false}}
     {:reply, new_state.properties, new_state}
   end
 
   def handle_call(:mark, _from, %{properties: %{marked?: false} = properties} = state) do
+    GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :increment_flags)
+
     new_state = %{state | properties: %{properties | marked?: true}}
     {:reply, new_state.properties, new_state}
   end

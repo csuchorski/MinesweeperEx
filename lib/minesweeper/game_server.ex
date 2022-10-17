@@ -29,10 +29,14 @@ defmodule Minesweeper.GameServer do
     {:ok, %{state | square_supervisor: square_supervisor_pid}}
   end
 
-  def handle_call() do
-  end
+  # Handle callbacks
 
-  def handle_cast(:increment_revealed_count, state) do
-    {:noreply, %{state | squares_revealed_count: state.squares_revealed_count + 1}}
-  end
+  def handle_cast(:increment_flags, state),
+    do: {:noreply, %{state | flag_count: state.flag_count + 1}}
+
+  def handle_cast(:decrement_flags, state),
+    do: {:noreply, %{state | flag_count: state.flag_count - 1}}
+
+  def handle_cast(:increment_revealed_count, state),
+    do: {:noreply, %{state | squares_revealed_count: state.squares_revealed_count + 1}}
 end
