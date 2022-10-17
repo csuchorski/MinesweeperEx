@@ -1,3 +1,3 @@
-<button phx-click="reveal" phx-target={@myself}>
+<button id={@id} phx-click="reveal" phx-hook="GameControl" phx-target={@myself}>
 <%=show(@properties) %>
 </button>
