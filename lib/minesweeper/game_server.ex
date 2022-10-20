@@ -29,7 +29,13 @@ defmodule Minesweeper.GameServer do
     {:ok, %{state | square_supervisor: square_supervisor_pid}}
   end
 
+  def get(game_id) do
+    GenServer.call({:via, Registry, {GameRegistry, game_id}}, :get)
+  end
+
   # Handle callbacks
+
+  def handle_call(:get, _From, state), do: {:reply, state, state}
 
   def handle_cast(:increment_flags, state),
     do: {:noreply, %{state | flag_count: state.flag_count + 1}}

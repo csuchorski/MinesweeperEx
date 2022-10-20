@@ -31,6 +31,7 @@ Hooks.GameControl = {
     mounted() {
         this.el.addEventListener('contextmenu', e => {
             this.pushEventTo(this.el, "mark", {})
+            this.pushEvent("update_flag_count", {})
             event.preventDefault()
         }
         )
