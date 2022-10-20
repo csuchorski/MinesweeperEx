@@ -29,14 +29,21 @@ import topbar from "../vendor/topbar"
 let Hooks = {}
 Hooks.GameControl = {
     mounted() {
-        this.el.addEventListener('contextmenu', e => {
+        this.el.addEventListener('click', () => {
+            this.pushEventTo(this.el, "reveal", {})
+            this.pushEvent("update_flag_count", {})
+        })
+
+        this.el.addEventListener('contextmenu', () => {
             this.pushEventTo(this.el, "mark", {})
             this.pushEvent("update_flag_count", {})
             event.preventDefault()
         }
         )
     }
+
 }
+
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
 let liveSocket = new LiveSocket("/live", Socket, { params: { _csrf_token: csrfToken }, hooks: Hooks })
