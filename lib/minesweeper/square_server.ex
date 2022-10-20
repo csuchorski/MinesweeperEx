@@ -36,7 +36,13 @@ defmodule Minesweeper.SquareServer do
   def handle_call(:get, _from, state), do: {:reply, state, state}
 
   def handle_call(:reveal, _from, %{properties: properties} = state) do
-    new_state = %{state | properties: %{properties | revealed?: true}}
+    GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :increment_revealed_count)
+
+    if properties.marked? == true do
+      GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :decrement_flags)
+    end
+
+    new_state = %{state | properties: %{properties | revealed?: true, marked?: false}}
     {:reply, new_state.properties, new_state}
   end
 
