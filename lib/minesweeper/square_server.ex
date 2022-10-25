@@ -27,6 +27,9 @@ defmodule Minesweeper.SquareServer do
     GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :reveal)
   end
 
+  def chain_reveal(game_id, {x, y}) do
+  end
+
   def mark({game_id, coords}) do
     GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :mark)
   end
@@ -42,8 +45,16 @@ defmodule Minesweeper.SquareServer do
       GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :decrement_flags)
     end
 
+    if properties.value == 0 do
+      chain_reveal(state.game_id, state.coords)
+    end
+
     new_state = %{state | properties: %{properties | revealed?: true, marked?: false}}
     {:reply, new_state.properties, new_state}
+  end
+
+  def handle_call(:mark, _from, %{properties: %{revealed?: true}} = state) do
+    {:reply, state.properties, state}
   end
 
   def handle_call(:mark, _from, %{properties: %{marked?: true} = properties} = state) do
