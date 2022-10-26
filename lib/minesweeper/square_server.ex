@@ -21,13 +21,24 @@ defmodule Minesweeper.SquareServer do
   end
 
   def reveal({game_id, coords}) do
-    # Increment the count of revealed squares in the GameServer
-    GenServer.cast({:via, Registry, {GameRegistry, game_id}}, :increment_revealed_count)
     # Reveal a square in the SquareServer
     GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :reveal)
   end
 
   def chain_reveal(game_id, {x, y}) do
+    neighbouring_zero_squares =
+      for mod_x <- -1..1,
+          mod_y <- -1..1,
+          square_coords = {x + mod_x, y + mod_y},
+          square_coords != {x, y},
+          !Enum.empty?(Registry.lookup(GameRegistry, {game_id, square_coords})),
+          get({game_id, square_coords}).properties.value == 0 do
+        {game_id, square_coords}
+      end
+
+    Enum.each(neighbouring_zero_squares, fn tuple ->
+      reveal(tuple)
+    end)
   end
 
   def mark({game_id, coords}) do
