@@ -7,14 +7,22 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
     {:ok, socket}
   end
 
-  def update(assigns, socket) do
-    properties = SquareServer.get({assigns.game_id, assigns.coords}).properties
+  def update(%{game_id: game_id, coords: coords} = assigns, socket) do
+    properties = SquareServer.get({game_id, coords}).properties
 
     socket =
       assign(socket, assigns)
       |> assign(:properties, properties)
 
+    # IO.puts("1")
+
     {:ok, socket}
+  end
+
+  def update(%{id: _id} = _assigns, socket) do
+    properties = SquareServer.get({socket.assigns.game_id, socket.assigns.coords}).properties
+    # IO.puts("2")
+    {:ok, assign(socket, :properties, properties)}
   end
 
   def show(%{revealed?: false, marked?: false}), do: "empty"
@@ -22,13 +30,12 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
   def show(%{revealed?: false, marked?: true}), do: "flag"
 
   def show(%{revealed?: true, value: :mine}), do: "mine!"
-
   def show(%{revealed?: true, value: n}), do: n
 
   def handle_event("reveal", _from, socket) do
-    new_props = SquareServer.reveal({socket.assigns.game_id, socket.assigns.coords})
+    SquareServer.reveal({socket.assigns.game_id, socket.assigns.coords})
 
-    {:noreply, assign(socket, :properties, new_props)}
+    {:noreply, socket}
   end
 
   def handle_event("mark", _from, socket) do

@@ -6,6 +6,8 @@ defmodule MinesweeperWeb.GameLive.Play do
   def mount(params, _session, socket) do
     {:ok, properties} = Minesweeper.GameLogic.start_game(params["diff"])
 
+    Phoenix.PubSub.subscribe(Minesweeper.PubSub, properties.game_id)
+
     {:ok, assign(socket, properties)}
   end
 
@@ -20,5 +22,11 @@ defmodule MinesweeperWeb.GameLive.Play do
       GameServer.get(socket.assigns.game_id) |> Map.get(:squares_revealed_count)
 
     {:noreply, assign(socket, :squares_revealed_count, new_revealed_count)}
+  end
+
+  def handle_info({:update_square, square_id}, socket) do
+    send_update(MinesweeperWeb.GameLive.SquareComponent, id: square_id)
+
+    {:noreply, socket}
   end
 end

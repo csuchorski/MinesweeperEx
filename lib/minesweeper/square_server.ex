@@ -49,24 +49,31 @@ defmodule Minesweeper.SquareServer do
 
   def handle_call(:get, _from, state), do: {:reply, state, state}
 
+  # Reveals
+  def handle_call(:reveal, _from, %{properties: %{revealed?: true}} = state),
+    do: {:reply, state.properties, state}
+
   def handle_call(:reveal, _from, %{properties: properties} = state) do
+    broadcast_square_update(state)
+
     GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :increment_revealed_count)
 
     if properties.marked? == true do
       GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :decrement_flags)
     end
 
-    if properties.value == 0 do
-      chain_reveal(state.game_id, state.coords)
-    end
-
     new_state = %{state | properties: %{properties | revealed?: true, marked?: false}}
-    {:reply, new_state.properties, new_state}
+
+    if properties.value == 0 do
+      {:reply, new_state.properties, new_state, {:continue, :chain_reveal}}
+    else
+      {:reply, new_state.properties, new_state}
+    end
   end
 
-  def handle_call(:mark, _from, %{properties: %{revealed?: true}} = state) do
-    {:reply, state.properties, state}
-  end
+  # Flags
+  def handle_call(:mark, _from, %{properties: %{revealed?: true}} = state),
+    do: {:reply, state.properties, state}
 
   def handle_call(:mark, _from, %{properties: %{marked?: true} = properties} = state) do
     GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :decrement_flags)
@@ -80,5 +87,18 @@ defmodule Minesweeper.SquareServer do
 
     new_state = %{state | properties: %{properties | marked?: true}}
     {:reply, new_state.properties, new_state}
+  end
+
+  def handle_continue(:chain_reveal, %{game_id: game_id, coords: coords} = state) do
+    chain_reveal(game_id, coords)
+    {:noreply, state}
+  end
+
+  defp broadcast_square_update(%{game_id: game_id, coords: {x, y}} = state) do
+    Phoenix.PubSub.broadcast(
+      Minesweeper.PubSub,
+      state.game_id,
+      {:update_square, "#{game_id}-#{x}-#{y}"}
+    )
   end
 end
