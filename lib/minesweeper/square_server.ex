@@ -22,7 +22,7 @@ defmodule Minesweeper.SquareServer do
 
   def reveal({game_id, coords}) do
     # Reveal a square in the SquareServer
-    GenServer.call({:via, Registry, {GameRegistry, {game_id, coords}}}, :reveal)
+    GenServer.cast({:via, Registry, {GameRegistry, {game_id, coords}}}, :reveal)
   end
 
   def chain_reveal(game_id, {x, y}) do
@@ -47,29 +47,8 @@ defmodule Minesweeper.SquareServer do
 
   # Handle callbacks
 
+  # Get state
   def handle_call(:get, _from, state), do: {:reply, state, state}
-
-  # Reveals
-  def handle_call(:reveal, _from, %{properties: %{revealed?: true}} = state),
-    do: {:reply, state.properties, state}
-
-  def handle_call(:reveal, _from, %{properties: properties} = state) do
-    broadcast_square_update(state)
-
-    GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :increment_revealed_count)
-
-    if properties.marked? == true do
-      GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :decrement_flags)
-    end
-
-    new_state = %{state | properties: %{properties | revealed?: true, marked?: false}}
-
-    if properties.value == 0 do
-      {:reply, new_state.properties, new_state, {:continue, :chain_reveal}}
-    else
-      {:reply, new_state.properties, new_state}
-    end
-  end
 
   # Flags
   def handle_call(:mark, _from, %{properties: %{revealed?: true}} = state),
@@ -89,11 +68,34 @@ defmodule Minesweeper.SquareServer do
     {:reply, new_state.properties, new_state}
   end
 
+  # Reveals
+  def handle_cast(:reveal, %{properties: %{revealed?: true}} = state),
+    do: {:noreply, state}
+
+  def handle_cast(:reveal, %{properties: properties} = state) do
+    broadcast_square_update(state)
+
+    GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :increment_revealed_count)
+
+    if properties.marked? == true do
+      GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :decrement_flags)
+    end
+
+    new_state = %{state | properties: %{properties | revealed?: true, marked?: false}}
+
+    if properties.value == 0 do
+      {:noreply, new_state, {:continue, :chain_reveal}}
+    else
+      {:noreply, new_state}
+    end
+  end
+
   def handle_continue(:chain_reveal, %{game_id: game_id, coords: coords} = state) do
     chain_reveal(game_id, coords)
     {:noreply, state}
   end
 
+  # PubSub broadcast
   defp broadcast_square_update(%{game_id: game_id, coords: {x, y}} = state) do
     Phoenix.PubSub.broadcast(
       Minesweeper.PubSub,
