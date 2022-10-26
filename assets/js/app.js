@@ -32,6 +32,7 @@ Hooks.GameControl = {
         this.el.addEventListener('click', () => {
             this.pushEventTo(this.el, "reveal", {})
             this.pushEvent("update_flag_count", {})
+            this.pushEvent("update_revealed_count", {})
         })
 
         this.el.addEventListener('contextmenu', () => {

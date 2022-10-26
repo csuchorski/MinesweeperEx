@@ -14,4 +14,11 @@ defmodule MinesweeperWeb.GameLive.Play do
 
     {:noreply, assign(socket, :flag_count, new_flag_count)}
   end
+
+  def handle_event("update_revealed_count", _params, socket) do
+    new_revealed_count =
+      GameServer.get(socket.assigns.game_id) |> Map.get(:squares_revealed_count)
+
+    {:noreply, assign(socket, :squares_revealed_count, new_revealed_count)}
+  end
 end
