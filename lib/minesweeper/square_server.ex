@@ -84,7 +84,8 @@ defmodule Minesweeper.SquareServer do
     new_state = %{state | properties: %{properties | revealed?: true, marked?: false}}
 
     if properties.value == 0 do
-      {:noreply, new_state, {:continue, :chain_reveal}}
+      Task.start(Minesweeper.SquareServer, :chain_reveal, [new_state.game_id, new_state.coords])
+      {:noreply, new_state}
     else
       {:noreply, new_state}
     end
