@@ -11,21 +11,21 @@ defmodule MinesweeperWeb.GameLive.Play do
     {:ok, assign(socket, properties)}
   end
 
-  def handle_event("update_flag_count", _params, socket) do
-    new_flag_count = GameServer.get(socket.assigns.game_id) |> Map.get(:flag_count)
-
-    {:noreply, assign(socket, :flag_count, new_flag_count)}
-  end
-
-  def handle_event("update_revealed_count", _params, socket) do
-    new_revealed_count =
-      GameServer.get(socket.assigns.game_id) |> Map.get(:squares_revealed_count)
-
-    {:noreply, assign(socket, :squares_revealed_count, new_revealed_count)}
-  end
-
   def handle_info({:update_square, square_id}, socket) do
     send_update(MinesweeperWeb.GameLive.SquareComponent, id: square_id)
+
+    {:noreply, socket}
+  end
+
+  def handle_info(:update_props, socket) do
+    new_props = GameServer.get(socket.assigns.game_id)
+    squares_revealed = Map.get(new_props, :squares_revealed_count)
+    flag_count = Map.get(new_props, :flag_count)
+
+    socket =
+      socket
+      |> assign(:squares_revealed_count, squares_revealed)
+      |> assign(:flag_count, flag_count)
 
     {:noreply, socket}
   end

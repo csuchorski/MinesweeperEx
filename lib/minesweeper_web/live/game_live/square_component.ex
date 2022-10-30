@@ -14,14 +14,11 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
       assign(socket, assigns)
       |> assign(:properties, properties)
 
-    # IO.puts("1")
-
     {:ok, socket}
   end
 
   def update(%{id: _id} = _assigns, socket) do
     properties = SquareServer.get({socket.assigns.game_id, socket.assigns.coords}).properties
-    # IO.puts("2")
     {:ok, assign(socket, :properties, properties)}
   end
 

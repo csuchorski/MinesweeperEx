@@ -73,8 +73,6 @@ defmodule Minesweeper.SquareServer do
     do: {:noreply, state}
 
   def handle_cast(:reveal, %{properties: properties} = state) do
-    broadcast_square_update(state)
-
     GenServer.cast({:via, Registry, {GameRegistry, state.game_id}}, :increment_revealed_count)
 
     if properties.marked? == true do
@@ -82,6 +80,8 @@ defmodule Minesweeper.SquareServer do
     end
 
     new_state = %{state | properties: %{properties | revealed?: true, marked?: false}}
+
+    broadcast_square_update(state)
 
     if properties.value == 0 do
       Task.start(Minesweeper.SquareServer, :chain_reveal, [new_state.game_id, new_state.coords])

@@ -31,13 +31,10 @@ Hooks.GameControl = {
     mounted() {
         this.el.addEventListener('click', () => {
             this.pushEventTo(this.el, "reveal", {})
-            this.pushEvent("update_flag_count", {})
-            this.pushEvent("update_revealed_count", {})
         })
 
         this.el.addEventListener('contextmenu', () => {
             this.pushEventTo(this.el, "mark", {})
-            this.pushEvent("update_flag_count", {})
             event.preventDefault()
         }
         )

@@ -38,13 +38,28 @@ defmodule Minesweeper.GameServer do
   def handle_call(:get, _From, state), do: {:reply, state, state}
 
   def handle_cast(:increment_flags, state) do
+    broadcast_game_props_update(state)
+
     {:noreply, %{state | flag_count: state.flag_count + 1}}
   end
 
   def handle_cast(:decrement_flags, state) do
+    broadcast_game_props_update(state)
+
     {:noreply, %{state | flag_count: state.flag_count - 1}}
   end
 
-  def handle_cast(:increment_revealed_count, state),
-    do: {:noreply, %{state | squares_revealed_count: state.squares_revealed_count + 1}}
+  def handle_cast(:increment_revealed_count, state) do
+    broadcast_game_props_update(state)
+
+    {:noreply, %{state | squares_revealed_count: state.squares_revealed_count + 1}}
+  end
+
+  defp broadcast_game_props_update(state) do
+    Phoenix.PubSub.broadcast(
+      Minesweeper.PubSub,
+      state.game_id,
+      :update_props
+    )
+  end
 end
