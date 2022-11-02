@@ -18,6 +18,7 @@ defmodule Minesweeper.GameLogic do
       width: diff_tuple |> elem(0),
       height: diff_tuple |> elem(1),
       mines_count: diff_tuple |> elem(2),
+      revealed_target: elem(diff_tuple, 0) * elem(diff_tuple, 1) - elem(diff_tuple, 2),
       square_supervisor: nil,
       flag_count: 0,
       squares_revealed_count: 0
