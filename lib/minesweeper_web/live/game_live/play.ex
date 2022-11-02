@@ -29,4 +29,12 @@ defmodule MinesweeperWeb.GameLive.Play do
 
     {:noreply, socket}
   end
+
+  def handle_info({:change_status, :win}, socket) do
+    {:noreply, push_patch(socket, to: "/win")}
+  end
+
+  def handle_info({:change_status, :loss}, socket) do
+    {:noreply, push_patch(socket, to: "/loss")}
+  end
 end
