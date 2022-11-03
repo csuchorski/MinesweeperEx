@@ -21,7 +21,8 @@ defmodule Minesweeper.GameLogic do
       revealed_target: elem(diff_tuple, 0) * elem(diff_tuple, 1) - elem(diff_tuple, 2),
       square_supervisor: nil,
       flag_count: 0,
-      squares_revealed_count: 0
+      squares_revealed_count: 0,
+      game_status: :pending
     }
 
     game =

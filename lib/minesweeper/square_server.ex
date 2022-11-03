@@ -37,6 +37,7 @@ defmodule Minesweeper.SquareServer do
       end
 
     Enum.each(neighbouring_zero_squares, fn tuple ->
+      Process.sleep(100)
       reveal(tuple)
     end)
   end
@@ -69,10 +70,10 @@ defmodule Minesweeper.SquareServer do
   end
 
   # Reveals
-  def handle_cast(:reveal, %{game_id: game_id, properties: %{value: :mine}} = state) do
+  def handle_cast(:reveal, %{game_id: game_id, properties: %{value: :mine} = properties} = state) do
     broadcast_square_update(state)
-    Minesweeper.GameServer.lose(game_id)
-    {:noreply, state}
+    # Minesweeper.GameServer.lose(game_id)
+    {:noreply, %{state | properties: %{properties | revealed?: true}}}
   end
 
   def handle_cast(:reveal, %{properties: %{revealed?: true}} = state),

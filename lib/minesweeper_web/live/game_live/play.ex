@@ -31,10 +31,12 @@ defmodule MinesweeperWeb.GameLive.Play do
   end
 
   def handle_info({:change_status, :win}, socket) do
-    {:noreply, push_patch(socket, to: "/win")}
+    put_flash(socket, :info, "It worked!")
+    {:noreply, socket}
   end
 
   def handle_info({:change_status, :loss}, socket) do
-    {:noreply, push_patch(socket, to: "/loss")}
+    put_flash(socket, :info, "It worked!")
+    {:noreply, socket}
   end
 end

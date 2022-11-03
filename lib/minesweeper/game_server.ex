@@ -75,6 +75,7 @@ defmodule Minesweeper.GameServer do
   end
 
   def handle_cast(status, state) when status in [:win, :loss] do
+    broadcast_game_props_update(state)
     broadcast_game_status_change(state, status)
     {:noreply, %{state | game_status: status}}
   end
