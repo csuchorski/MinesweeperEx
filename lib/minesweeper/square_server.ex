@@ -72,7 +72,7 @@ defmodule Minesweeper.SquareServer do
   # Reveals
   def handle_cast(:reveal, %{game_id: game_id, properties: %{value: :mine} = properties} = state) do
     broadcast_square_update(state)
-    # Minesweeper.GameServer.lose(game_id)
+    Minesweeper.GameServer.lose(game_id)
     {:noreply, %{state | properties: %{properties | revealed?: true}}}
   end
 

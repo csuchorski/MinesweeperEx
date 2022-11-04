@@ -21,9 +21,11 @@ defmodule MinesweeperWeb.GameLive.Play do
     new_props = GameServer.get(socket.assigns.game_id)
     squares_revealed = Map.get(new_props, :squares_revealed_count)
     flag_count = Map.get(new_props, :flag_count)
+    game_status = Map.get(new_props, :game_status)
 
     socket =
       socket
+      |> assign(:game_status, game_status)
       |> assign(:squares_revealed_count, squares_revealed)
       |> assign(:flag_count, flag_count)
 
@@ -31,12 +33,12 @@ defmodule MinesweeperWeb.GameLive.Play do
   end
 
   def handle_info({:change_status, :win}, socket) do
-    put_flash(socket, :info, "It worked!")
+    # put_flash(socket, :info, "It worked!")
     {:noreply, socket}
   end
 
   def handle_info({:change_status, :loss}, socket) do
-    put_flash(socket, :info, "It worked!")
+    # put_flash(socket, :info, "It worked!")
     {:noreply, socket}
   end
 end

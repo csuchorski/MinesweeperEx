@@ -65,7 +65,8 @@ defmodule Minesweeper.GameServer do
         } = state
       )
       when count + 1 == target_count do
-    {:stop, :win, %{state | squares_revealed_count: count + 1}}
+    win(state.game_id)
+    {:noreply, %{state | squares_revealed_count: count + 1}}
   end
 
   def handle_cast(:increment_revealed_count, %{squares_revealed_count: count} = state) do
@@ -76,7 +77,7 @@ defmodule Minesweeper.GameServer do
 
   def handle_cast(status, state) when status in [:win, :loss] do
     broadcast_game_props_update(state)
-    broadcast_game_status_change(state, status)
+    # broadcast_game_status_change(state, status)
     {:noreply, %{state | game_status: status}}
   end
 
