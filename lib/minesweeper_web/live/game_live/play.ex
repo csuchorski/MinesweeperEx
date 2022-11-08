@@ -11,6 +11,11 @@ defmodule MinesweeperWeb.GameLive.Play do
     {:ok, assign(socket, properties)}
   end
 
+  def handle_event("return", _params, %{assigns: %{game_id: game_id}} = socket) do
+    GameServer.close_game(game_id)
+    {:noreply, redirect(socket, to: "/")}
+  end
+
   def handle_info({:update_square, square_id}, socket) do
     send_update(MinesweeperWeb.GameLive.SquareComponent, id: square_id)
 

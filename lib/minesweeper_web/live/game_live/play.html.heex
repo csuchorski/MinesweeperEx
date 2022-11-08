@@ -2,7 +2,7 @@
 <p>Flag count: <%=@flag_count%></p>
 <p>Game id: <%=@game_id %></p>
 <p>Squares revealed: <%=@squares_revealed_count %></p>
-<table>
+<table class ={if @game_status in [:win, :loss], do: "locked"}>
 <%= for row <- 1..@height do  %>
     <tr>
         <%= for col <- 1..@width do%>
@@ -27,3 +27,5 @@
 <%= if @game_status == :loss do%>
     <p>Game lost!</p>
 <% end%>
+
+<button phx-click="return">Return to landing page</button>

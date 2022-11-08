@@ -41,6 +41,10 @@ defmodule Minesweeper.GameServer do
     GenServer.cast({:via, Registry, {GameRegistry, game_id}}, :loss)
   end
 
+  def close_game(game_id) do
+    GenServer.cast({:via, Registry, {GameRegistry, game_id}}, :close)
+  end
+
   # Handle callbacks
 
   def handle_call(:get, _From, state), do: {:reply, state, state}
@@ -75,6 +79,8 @@ defmodule Minesweeper.GameServer do
     {:noreply, %{state | squares_revealed_count: count + 1}}
   end
 
+  def handle_cast(:close, state), do: {:stop, :shutdown, state}
+
   def handle_cast(status, state) when status in [:win, :loss] do
     broadcast_game_props_update(state)
     # broadcast_game_status_change(state, status)
@@ -89,11 +95,11 @@ defmodule Minesweeper.GameServer do
     )
   end
 
-  defp broadcast_game_status_change(%{game_id: game_id}, status) do
-    Phoenix.PubSub.broadcast(
-      Minesweeper.PubSub,
-      game_id,
-      {:change_status, status}
-    )
-  end
+  # defp broadcast_game_status_change(%{game_id: game_id}, status) do
+  #   Phoenix.PubSub.broadcast(
+  #     Minesweeper.PubSub,
+  #     game_id,
+  #     {:change_status, status}
+  #   )
+  # end
 end

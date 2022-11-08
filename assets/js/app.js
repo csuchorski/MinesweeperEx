@@ -39,8 +39,11 @@ Hooks.GameControl = {
         }
         )
     }
-
 }
+
+const returnBtn = document.getElementById("return-btn")
+//returnBtn.addEventListener('click' )
+
 
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
