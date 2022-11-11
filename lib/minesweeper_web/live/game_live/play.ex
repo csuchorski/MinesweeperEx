@@ -4,11 +4,63 @@ defmodule MinesweeperWeb.GameLive.Play do
   alias Minesweeper.GameServer
 
   def mount(params, _session, socket) do
+    case connected?(socket) do
+      false ->
+        {:ok, assign(socket, :page, :loading)}
+
+      true ->
+        connected_mount(params, socket)
+    end
+  end
+
+  def connected_mount(params, socket) do
     {:ok, properties} = Minesweeper.GameLogic.start_game(params["diff"])
 
     Phoenix.PubSub.subscribe(Minesweeper.PubSub, properties.game_id)
+    socket = socket |> assign(:page, :loaded) |> assign(properties)
+    {:ok, socket}
+  end
 
-    {:ok, assign(socket, properties)}
+  def render(%{page: :loading} = assigns) do
+    ~H"""
+    <p>loading</p>
+    """
+  end
+
+  def render(assigns) do
+    ~H"""
+    <p>Game status: <%=@game_status%></p>
+    <p>Flag count: <%=@flag_count%></p>
+    <p>Game id: <%=@game_id %></p>
+    <p>Squares revealed: <%=@squares_revealed_count %></p>
+    <table class ={if @game_status in [:win, :loss], do: "locked"}>
+    <%= for row <- 1..@height do  %>
+    <tr>
+        <%= for col <- 1..@width do%>
+            <td>
+                <.live_component
+                    id={"#{@game_id}-#{col}-#{row}"}
+                    module={MinesweeperWeb.GameLive.SquareComponent}
+                    game_id={@game_id}
+                    coords={{col, row}}
+                />
+            </td>
+        <%end %>
+    </tr>
+    <%end %>
+    </table>
+    
+    <%= if @game_status == :win do%>
+    <p>Game won!</p>
+    <% end%>
+    
+    
+    <%= if @game_status == :loss do%>
+    <p>Game lost!</p>
+    <% end%>
+    
+    <button phx-click="return">Return to landing page</button>
+    """
   end
 
   def handle_event("return", _params, %{assigns: %{game_id: game_id}} = socket) do
@@ -34,16 +86,6 @@ defmodule MinesweeperWeb.GameLive.Play do
       |> assign(:squares_revealed_count, squares_revealed)
       |> assign(:flag_count, flag_count)
 
-    {:noreply, socket}
-  end
-
-  def handle_info({:change_status, :win}, socket) do
-    # put_flash(socket, :info, "It worked!")
-    {:noreply, socket}
-  end
-
-  def handle_info({:change_status, :loss}, socket) do
-    # put_flash(socket, :info, "It worked!")
     {:noreply, socket}
   end
 end
