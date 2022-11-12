@@ -12,6 +12,8 @@ defmodule Minesweeper.GameServer do
 
   def init(state) do
     field = Minesweeper.GameLogic.setup_board(state)
+    # Minesweeper.GameLogic.setup_timer()
+    :erlang.send_after(1000, self(), :tick)
 
     {:ok, square_supervisor_pid} =
       DynamicSupervisor.start_child(
@@ -33,6 +35,10 @@ defmodule Minesweeper.GameServer do
     GenServer.call({:via, Registry, {GameRegistry, game_id}}, :get)
   end
 
+  def get_time(game_id) do
+    GenServer.call({:via, Registry, {GameRegistry, game_id}}, :get_time)
+  end
+
   def win(game_id) do
     GenServer.cast({:via, Registry, {GameRegistry, game_id}}, :win)
   end
@@ -47,16 +53,19 @@ defmodule Minesweeper.GameServer do
 
   # Handle callbacks
 
-  def handle_call(:get, _From, state), do: {:reply, state, state}
+  def handle_call(:get, _from, state), do: {:reply, state, state}
+
+  def handle_call(:get_time, _from, %{time_value: time_val} = state),
+    do: {:reply, time_val, state}
 
   def handle_cast(:increment_flags, state) do
-    broadcast_game_props_update(state)
+    broadcast_game_props_update(state.game_id)
 
     {:noreply, %{state | flag_count: state.flag_count + 1}}
   end
 
   def handle_cast(:decrement_flags, state) do
-    broadcast_game_props_update(state)
+    broadcast_game_props_update(state.game_id)
 
     {:noreply, %{state | flag_count: state.flag_count - 1}}
   end
@@ -74,7 +83,7 @@ defmodule Minesweeper.GameServer do
   end
 
   def handle_cast(:increment_revealed_count, %{squares_revealed_count: count} = state) do
-    broadcast_game_props_update(state)
+    broadcast_game_props_update(state.game_id)
 
     {:noreply, %{state | squares_revealed_count: count + 1}}
   end
@@ -82,24 +91,50 @@ defmodule Minesweeper.GameServer do
   def handle_cast(:close, state), do: {:stop, :shutdown, state}
 
   def handle_cast(status, state) when status in [:win, :loss] do
-    broadcast_game_props_update(state)
-    # broadcast_game_status_change(state, status)
+    broadcast_game_status(state.game_id, status)
     {:noreply, %{state | game_status: status}}
   end
 
-  defp broadcast_game_props_update(state) do
+  def handle_info(
+        :tick,
+        %{game_id: game_id, time_value: value, time_limit: limit} = state
+      ) do
+    value = value + 1
+
+    if value <= limit do
+      broadcast_time_update(game_id)
+
+      :erlang.send_after(1000, self(), :tick)
+      {:noreply, %{state | time_value: value}}
+    else
+      lose(game_id)
+      close_game(game_id)
+      {:noreply, %{state | time_value: value}}
+      # {:stop, :shutdown, state}
+    end
+  end
+
+  defp broadcast_game_props_update(game_id) do
     Phoenix.PubSub.broadcast(
       Minesweeper.PubSub,
-      state.game_id,
+      game_id,
       :update_props
     )
   end
 
-  # defp broadcast_game_status_change(%{game_id: game_id}, status) do
-  #   Phoenix.PubSub.broadcast(
-  #     Minesweeper.PubSub,
-  #     game_id,
-  #     {:change_status, status}
-  #   )
-  # end
+  defp broadcast_time_update(game_id) do
+    Phoenix.PubSub.broadcast(
+      Minesweeper.PubSub,
+      game_id,
+      :update_timer
+    )
+  end
+
+  defp broadcast_game_status(game_id, status) do
+    Phoenix.PubSub.broadcast(
+      Minesweeper.PubSub,
+      game_id,
+      {:change_status, status}
+    )
+  end
 end

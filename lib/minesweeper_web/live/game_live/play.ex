@@ -33,6 +33,7 @@ defmodule MinesweeperWeb.GameLive.Play do
     <p>Flag count: <%=@flag_count%></p>
     <p>Game id: <%=@game_id %></p>
     <p>Squares revealed: <%=@squares_revealed_count %></p>
+    <p>Time: <%=@time_value %>/<%=@time_limit%></p>
     <table class ={if @game_status in [:win, :loss], do: "locked"}>
     <%= for row <- 1..@height do  %>
     <tr>
@@ -49,16 +50,16 @@ defmodule MinesweeperWeb.GameLive.Play do
     </tr>
     <%end %>
     </table>
-    
+
     <%= if @game_status == :win do%>
     <p>Game won!</p>
     <% end%>
-    
-    
+
+
     <%= if @game_status == :loss do%>
     <p>Game lost!</p>
     <% end%>
-    
+
     <button phx-click="return">Return to landing page</button>
     """
   end
@@ -88,4 +89,13 @@ defmodule MinesweeperWeb.GameLive.Play do
 
     {:noreply, socket}
   end
+
+  def handle_info(:update_timer, socket) do
+    time = GameServer.get_time(socket.assigns.game_id)
+
+    {:noreply, assign(socket, :time_value, time)}
+  end
+
+  def handle_info({:change_status, status}, socket),
+    do: {:noreply, assign(socket, :game_status, status)}
 end

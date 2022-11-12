@@ -22,6 +22,9 @@ defmodule Minesweeper.GameLogic do
       square_supervisor: nil,
       flag_count: 0,
       squares_revealed_count: 0,
+      time_limit: 10,
+      time_value: 0,
+      timer_pid: nil,
       game_status: :pending
     }
 
@@ -48,6 +51,10 @@ defmodule Minesweeper.GameLogic do
     normal_squares = Enum.into(normal_squares, %{})
 
     increment_near_bombs(mine_squares, normal_squares)
+  end
+
+  def setup_timer() do
+    :erlang.send_after(1000, self(), :tick)
   end
 
   @spec generate_id :: binary
