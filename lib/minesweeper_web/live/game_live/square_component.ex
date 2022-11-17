@@ -22,7 +22,7 @@ defmodule MinesweeperWeb.GameLive.SquareComponent do
     {:ok, assign(socket, :properties, properties)}
   end
 
-  def show(%{revealed?: false, marked?: false}), do: "empty"
+  def show(%{revealed?: false, marked?: false}), do: ""
 
   def show(%{revealed?: false, marked?: true}), do: "flag"
 

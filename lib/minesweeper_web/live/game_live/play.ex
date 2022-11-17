@@ -29,11 +29,13 @@ defmodule MinesweeperWeb.GameLive.Play do
 
   def render(assigns) do
     ~H"""
-    <p>Game status: <%=@game_status%></p>
-    <p>Flag count: <%=@flag_count%></p>
-    <p>Game id: <%=@game_id %></p>
-    <p>Squares revealed: <%=@squares_revealed_count %></p>
-    <p>Time: <%=@time_value %>/<%=@time_limit%></p>
+    <div>
+      <p>Game id: <%=@game_id %></p>
+      <p>Flag count: <%=@flag_count%>/<%=@mines_count%></p>
+      <p>Squares revealed: <%=@squares_revealed_count %></p>
+      <p>Time: <%=@time_value %>/<%=@time_limit%></p>
+    </div>
+    
     <table class ={if @game_status in [:win, :loss], do: "locked"}>
     <%= for row <- 1..@height do  %>
     <tr>
@@ -52,12 +54,12 @@ defmodule MinesweeperWeb.GameLive.Play do
     </table>
     
     <%= if @game_status == :win do%>
-    <p>Game won!</p>
+    <p class="game-info">Game won!</p>
     <% end%>
     
     
     <%= if @game_status == :loss do%>
-    <p>Game lost!</p>
+    <p class="game-info">Game lost!</p>
     <% end%>
     
     <button phx-click="return">Return to landing page</button>
