@@ -92,6 +92,7 @@ defmodule Minesweeper.GameServer do
 
   def handle_cast(status, state) when status in [:win, :loss] do
     broadcast_game_status(state.game_id, status)
+    close_game(state.game_id)
     {:noreply, %{state | game_status: status}}
   end
 

@@ -22,7 +22,7 @@ defmodule Minesweeper.GameLogic do
       square_supervisor: nil,
       flag_count: 0,
       squares_revealed_count: 0,
-      time_limit: 10,
+      time_limit: 300,
       time_value: 0,
       timer_pid: nil,
       game_status: :pending

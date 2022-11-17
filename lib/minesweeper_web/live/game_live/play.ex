@@ -50,16 +50,16 @@ defmodule MinesweeperWeb.GameLive.Play do
     </tr>
     <%end %>
     </table>
-
+    
     <%= if @game_status == :win do%>
     <p>Game won!</p>
     <% end%>
-
-
+    
+    
     <%= if @game_status == :loss do%>
     <p>Game lost!</p>
     <% end%>
-
+    
     <button phx-click="return">Return to landing page</button>
     """
   end
